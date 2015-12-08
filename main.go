@@ -20,12 +20,12 @@ var sourceFile = flag.String("source_file", "", "Ex. users.csv, format:id,userna
 var sentLogFile = flag.String("sent_log_file", "sent.log", "Ex. sent.log")
 var tempFile = flag.String("template", "", "Ex. template.html")
 var smtpHost = flag.String("smtp_host", "", "Ex. smtp.sendgrid.net")
-var smtpUsername = flag.String("smtp_username", "", "")
-var smtpPassword = flag.String("smtp_pwd", "", "")
-var smtpPort = flag.Int("smtp_port", 587, "")
+var smtpUsername = flag.String("smtp_username", "", "smtp account username")
+var smtpPassword = flag.String("smtp_pwd", "", "smtp account password")
+var smtpPort = flag.Int("smtp_port", 587, "the port of smtp")
 var maxMailPerConn = flag.Int("max_mail_per_conn", 1000, "Max email in each smtp connection")
-var mailFrom = flag.String("mail_from", "help@thecn.com", "")
-var mailSubject = flag.String("mail_subject", "", "")
+var mailFrom = flag.String("mail_from", "help@thecn.com", "set from email")
+var mailSubject = flag.String("mail_subject", "", "set subject of this email")
 var unsubcribeSalt = flag.String("unsubcribe_salt", "", "The salt for generating CN unsubcribe URL")
 
 func checkFlag() bool {
