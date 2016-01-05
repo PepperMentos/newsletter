@@ -164,7 +164,7 @@ func main() {
 			break
 		} else {
 			log.Printf("[OK]Sent to %v: %s <%v>\n", id, name, address)
-			f.WriteString(strings.Join(line, ","))
+			sentLog.WriteString(strings.Join(line, ","))
 		}
 
 		msg.Reset()
