@@ -15,18 +15,19 @@ import (
 	"github.com/elsonwu/goutil"
 )
 
-var host = flag.String("host", "", "Ex. https://www.thecn.com")
+var host = flag.String("host", "", "Base URL, Ex. https://www.thecn.com")
 var sourceFile = flag.String("source_file", "", "Ex. users.csv, format:id,username,email")
 var sentLogFile = flag.String("sent_log_file", "sent.log", "Ex. sent.log")
 var tempFile = flag.String("template", "", "Ex. template.html")
-var smtpHost = flag.String("smtp_host", "", "Ex. smtp.sendgrid.net")
+var smtpHost = flag.String("smtp_host", "smtp.sendgrid.net", "Ex. smtp.sendgrid.net")
 var smtpUsername = flag.String("smtp_username", "", "smtp account username")
 var smtpPassword = flag.String("smtp_pwd", "", "smtp account password")
 var smtpPort = flag.Int("smtp_port", 587, "the port of smtp")
 var maxMailPerConn = flag.Int("max_mail_per_conn", 1000, "Max email in each smtp connection")
-var mailFrom = flag.String("mail_from", "help@thecn.com", "set from email")
+var mailFrom = flag.String("mail_from", "CourseNetworking <em@thecn.com>", "set from email, Ex: CourseNetworking <em@thecn.com>")
+var mailReplyTo = flag.String("mail_reply_to", "CourseNetworking <help@thecn.com>", "set email reply-to value, Ex: CourseNetworking <help@thecn.com>")
 var mailSubject = flag.String("mail_subject", "", "set subject of this email")
-var unsubcribeSalt = flag.String("unsubcribe_salt", "", "The salt for generating CN unsubcribe URL")
+var unsubscribeSalt = flag.String("unsubscribe_salt", "", "The salt for generating CN unsubscribe URL")
 
 func checkFlag() bool {
 	if *host == "" {
@@ -69,8 +70,8 @@ func checkFlag() bool {
 		return false
 	}
 
-	if *unsubcribeSalt == "" {
-		log.Println("unsubcribe_salt is missing")
+	if *unsubscribeSalt == "" {
+		log.Println("unsubscribe_salt is missing")
 		return false
 	}
 	return true
@@ -159,12 +160,16 @@ func main() {
 		msg.SetHeader("Subject", *mailSubject)
 		msg.SetBody("text/html", doc.String())
 
+		if *mailReplyTo != "" {
+			msg.SetHeader("Reply-To", *mailReplyTo)
+		}
+
 		if err := gomail.Send(srv, msg); err != nil {
 			log.Printf("[Err]Could not send email to %q: %v\n", address, err)
 			break
 		} else {
 			log.Printf("[OK]Sent to %v: %s <%v>\n", id, name, address)
-			sentLog.WriteString(strings.Join(line, ","))
+			sentLog.WriteString(strings.Join(line, ",") + "\n")
 		}
 
 		msg.Reset()
@@ -172,6 +177,6 @@ func main() {
 }
 
 func generateUnsubscribeUrl(userId string) string {
-	requestId := goutil.SubStr(goutil.Md5(userId+*unsubcribeSalt), 4, 16)
+	requestId := goutil.SubStr(goutil.Md5(userId+*unsubscribeSalt), 4, 16)
 	return *host + "/site/unsubscribe-news/" + userId + "/" + requestId
 }
