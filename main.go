@@ -28,6 +28,7 @@ var mailFrom = flag.String("mail_from", "CourseNetworking <em@thecn.com>", "set 
 var mailReplyTo = flag.String("mail_reply_to", "CourseNetworking <help@thecn.com>", "set email reply-to value, Ex: CourseNetworking <help@thecn.com>")
 var mailSubject = flag.String("mail_subject", "", "set subject of this email")
 var unsubscribeSalt = flag.String("unsubscribe_salt", "", "The salt for generating CN unsubscribe URL")
+var unsubscribeHost = flag.String("unsubscribe_host", "https://www.thecn.com", "The host domain for generating CN unsubscribe URL")
 
 func checkFlag() bool {
 	if *host == "" {
@@ -74,6 +75,12 @@ func checkFlag() bool {
 		log.Println("unsubscribe_salt is missing")
 		return false
 	}
+
+	if *unsubscribeHost == "" {
+		log.Println("unsubscribe_host is empty")
+		return false
+	}
+
 	return true
 }
 
@@ -178,5 +185,5 @@ func main() {
 
 func generateUnsubscribeUrl(userId string) string {
 	requestId := goutil.SubStr(goutil.Md5(userId+*unsubscribeSalt), 4, 16)
-	return *host + "/site/unsubscribe-news/" + userId + "/" + requestId
+	return *unsubscribeHost + "/site/unsubscribe-news/" + userId + "/" + requestId
 }
