@@ -173,7 +173,6 @@ func main() {
 
 		if err := gomail.Send(srv, msg); err != nil {
 			log.Printf("[Err]Could not send email to %q: %v\n", address, err)
-			break
 		} else {
 			log.Printf("[OK]Sent to %v: %s <%v>\n", id, name, address)
 			sentLog.WriteString(strings.Join(line, ",") + "\n")
